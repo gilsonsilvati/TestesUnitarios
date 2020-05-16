@@ -1,4 +1,4 @@
-package br.ce.wcaquino.entidades;
+package br.com.teste.domain.model;
 
 import java.util.Date;
 
