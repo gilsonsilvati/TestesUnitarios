@@ -1,13 +1,17 @@
 package br.com.teste.domain.service;
 
 import static br.com.teste.domain.util.DataUtil.adicionarDias;
+import static br.com.teste.domain.util.DataUtil.isMesmaData;
+import static br.com.teste.domain.util.DataUtil.obterDataComDiferencaDias;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+
+import org.junit.Test;
 
 import br.com.teste.domain.model.Filme;
 import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.model.Usuario;
-import br.com.teste.domain.util.DataUtil;
 
 public class LocacaoService {
 	
@@ -29,7 +33,8 @@ public class LocacaoService {
 		return locacao;
 	}
 
-	public static void main(String[] args) {
+	@Test
+	public void teste() {
 		
 		// cenario
 		LocacaoService locacaoService = new LocacaoService();
@@ -40,10 +45,9 @@ public class LocacaoService {
 		Locacao locacao = locacaoService.alugarFilme(usuario, filme);
 		
 		// verificacao
-		System.out.println(locacao.getValor() == 5.0);
-		System.out.println(DataUtil.isMesmaData(locacao.getDataLocacao(), new Date()));
-		System.out.println(DataUtil.isMesmaData(locacao.getDataRetorno(), DataUtil.obterDataComDiferencaDias(1)));
-		
+		assertTrue(locacao.getValor() == 5.0);
+		assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
+		assertTrue(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)));
 	}
 	
 }
