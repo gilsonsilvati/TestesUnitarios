@@ -9,6 +9,7 @@ import java.util.Date;
 
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -22,6 +23,8 @@ import br.com.teste.domain.model.Usuario;
 
 public class LocacaoServiceTest {
 	
+	private LocacaoService locacaoService;
+	
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
 	
@@ -29,10 +32,14 @@ public class LocacaoServiceTest {
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
+	@Before
+	public void setup() {
+		locacaoService = new LocacaoService();
+	}
+	
 	@Test
 	public void teste() throws Exception {
 		// cenario
-		LocacaoService locacaoService = new LocacaoService();
 		Usuario usuario = new Usuario("Usuario 1");
 		Filme filme = new Filme("Filme 1", 2, 5.0);
 		
@@ -49,7 +56,6 @@ public class LocacaoServiceTest {
 	@Test(expected = FilmeSemEstoqueException.class)
 	public void deveLancarException_filmeSemEstoqueException() throws Exception {
 		// cenario
-		LocacaoService locacaoService = new LocacaoService();
 		Usuario usuario = new Usuario("Usuario 1");
 		Filme filme = new Filme("Filme 1", 0, 5.0);
 
@@ -61,7 +67,6 @@ public class LocacaoServiceTest {
 	@Test
 	public void deveValidar_usuarioVazio() throws FilmeSemEstoqueException {
 		// cenario
-		LocacaoService locacaoService = new LocacaoService();
 		Filme filme = new Filme("Filme 1", 1, 5.0);
 
 		// acao
