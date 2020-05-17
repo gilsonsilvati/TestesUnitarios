@@ -43,6 +43,8 @@ public class LocacaoServiceTest {
 		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
 	}
 	
+	/* Tratando exceções, 3 formas */
+	
 	// 1° Forma: elegante
 	@Test(expected = Exception.class)
 	public void testLocacao_filmeSemEstoque_1() throws Exception {
