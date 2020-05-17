@@ -4,15 +4,23 @@ import static br.com.teste.domain.util.DataUtil.adicionarDias;
 
 import java.util.Date;
 
+import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
+import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
 import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.model.Usuario;
 
 public class LocacaoService {
 	
-	public Locacao alugarFilme(Usuario usuario, Filme filme) throws Exception {
+	public Locacao alugarFilme(Usuario usuario, Filme filme) throws FilmeSemEstoqueException, LocadoraException {
+		if (usuario == null)
+			throw new LocadoraException("Usuário vazio");
+		
+		if (filme == null)
+			throw new LocadoraException("Filme vazio");
+		
 		if (filme.getEstoque() == 0)
-			throw new Exception("Filme sem estoque");
+			throw new FilmeSemEstoqueException();
 		
 		Locacao locacao = new Locacao();
 		locacao.setFilme(filme);
