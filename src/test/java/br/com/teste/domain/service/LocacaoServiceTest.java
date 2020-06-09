@@ -1,8 +1,8 @@
 package br.com.teste.domain.service;
 
 import static br.com.teste.domain.matchers.MatchersProprios.caiNumaSegunda;
-import static br.com.teste.domain.util.DataUtil.isMesmaData;
-import static br.com.teste.domain.util.DataUtil.obterDataComDiferencaDias;
+import static br.com.teste.domain.matchers.MatchersProprios.ehHoje;
+import static br.com.teste.domain.matchers.MatchersProprios.ehHojeComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -55,8 +55,11 @@ public class LocacaoServiceTest {
 		
 		// verificacao
 		error.checkThat(locacao.getValor(), is(equalTo(5.0)));
-		error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
-		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+//		error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
+//		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+		
+		error.checkThat(locacao.getDataLocacao(), ehHoje());
+		error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
 	}
 	
 	// Elegante
