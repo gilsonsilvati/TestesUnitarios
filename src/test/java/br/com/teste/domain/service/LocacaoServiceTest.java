@@ -98,66 +98,6 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
-	public void devePagar75PorcentoNoFilme3() throws FilmeSemEstoqueException, LocadoraException {
-		// cenario
-		var usuario = new Usuario("Usuario 1");
-		var<Filme> filmes = Arrays.asList(
-				new Filme("Filme 1", 2, 4.0), new Filme("Filme 2", 2, 4.0),
-				new Filme("Filme 3", 2, 4.0));
-		
-		// acao
-		var locacao = locacaoService.alugarFilme(usuario, filmes);
-		
-		// verificacao: 4 + 4 + 75% (3) = 11.0
-		MatcherAssert.assertThat(locacao.getValor(), is(equalTo(11.0)));
-	}
-	
-	@Test
-	public void devePagar50PorcentoNoFilme4() throws FilmeSemEstoqueException, LocadoraException {
-		// cenario
-		var usuario = new Usuario("Usuario 1");
-		var<Filme> filmes = Arrays.asList(
-				new Filme("Filme 1", 2, 4.0), new Filme("Filme 2", 2, 4.0),
-				new Filme("Filme 3", 2, 4.0), new Filme("Filme 4", 2, 4.0));
-		
-		// acao
-		var locacao = locacaoService.alugarFilme(usuario, filmes);
-		
-		// verificacao: 4 + 4 + 75% (3) + 50% (2) = 13.0
-		MatcherAssert.assertThat(locacao.getValor(), is(equalTo(13.0)));
-	}
-	
-	@Test
-	public void devePagar25PorcentoNoFilme5() throws FilmeSemEstoqueException, LocadoraException {
-		// cenario
-		var usuario = new Usuario("Usuario 1");
-		var<Filme> filmes = Arrays.asList(
-				new Filme("Filme 1", 2, 4.0), new Filme("Filme 2", 2, 4.0), new Filme("Filme 3", 2, 4.0), 
-				new Filme("Filme 4", 2, 4.0), new Filme("Filme 5", 2, 4.0));
-		
-		// acao
-		var locacao = locacaoService.alugarFilme(usuario, filmes);
-		
-		// verificacao: 4 + 4 + 75% (3) + 50% (2) + 25% (1) = 14.0
-		MatcherAssert.assertThat(locacao.getValor(), is(equalTo(14.0)));
-	}
-	
-	@Test
-	public void devePagar0PorcentoNoFilme6() throws FilmeSemEstoqueException, LocadoraException {
-		// cenario
-		var usuario = new Usuario("Usuario 1");
-		var<Filme> filmes = Arrays.asList(
-				new Filme("Filme 1", 2, 4.0), new Filme("Filme 2", 2, 4.0), new Filme("Filme 3", 2, 4.0), 
-				new Filme("Filme 4", 2, 4.0), new Filme("Filme 5", 2, 4.0), new Filme("Filme 6", 2, 4.0));
-		
-		// acao
-		var locacao = locacaoService.alugarFilme(usuario, filmes);
-		
-		// verificacao: 4 + 4 + 75% (3) + 50% (2) + 25% (1) + 0% (0) = 14.0
-		MatcherAssert.assertThat(locacao.getValor(), is(equalTo(14.0)));
-	}
-	
-	@Test
 //	@Ignore
 	public void deveDevolverNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
 		Assume.assumeTrue(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
