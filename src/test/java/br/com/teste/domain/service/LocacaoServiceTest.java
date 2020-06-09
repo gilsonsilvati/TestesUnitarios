@@ -1,5 +1,6 @@
 package br.com.teste.domain.service;
 
+import static br.com.teste.domain.matchers.MatchersProprios.caiNumaSegunda;
 import static br.com.teste.domain.util.DataUtil.isMesmaData;
 import static br.com.teste.domain.util.DataUtil.obterDataComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -110,9 +111,12 @@ public class LocacaoServiceTest {
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
 		
 		// verificacao
-		boolean ehSegunda = DataUtil.verificarDiaSemana(locacao.getDataRetorno(), Calendar.MONDAY);
+//		boolean ehSegunda = DataUtil.verificarDiaSemana(locacao.getDataRetorno(), Calendar.MONDAY);
+//		Assert.assertTrue(ehSegunda);
 		
-		Assert.assertTrue(ehSegunda);
+//		MatcherAssert.assertThat(locacao.getDataRetorno(), new DiaSemanaMatcher(Calendar.MONDAY));
+//		MatcherAssert.assertThat(locacao.getDataRetorno(), caiEm(Calendar.MONDAY));
+		MatcherAssert.assertThat(locacao.getDataRetorno(), caiNumaSegunda());
 	}
 	
 }
