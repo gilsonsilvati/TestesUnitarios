@@ -40,16 +40,16 @@ public class LocacaoService {
 			
 			// Refatorar
 			/* if (i == 2)
-				valorFilme *= 0.75;
+				valorFilme = valorFilme * 0.75;
 			
 			if (i == 3)
-				valorFilme *= 0.5;
+				valorFilme = valorFilme * 0.5;
 			
 			if (i == 4)
-				valorFilme *= 0.25;
+				valorFilme = valorFilme * 0.25;
 			
 			if (i == 5)
-				valorFilme *= 0.0; */
+				valorFilme = 0.0; */
 			
 			// Refatoração
 			switch (i) {

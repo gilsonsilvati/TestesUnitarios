@@ -11,6 +11,7 @@ import java.util.Date;
 
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,7 +41,10 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
+//	@Ignore
 	public void deveAlugarFilme() throws Exception {
+		Assume.assumeFalse(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		
 		// cenario
 		var usuario = new Usuario("Usuario 1");
 		var<Filme> filmes = Arrays.asList(new Filme("Filme 1", 2, 5.0));
@@ -154,7 +158,10 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
+//	@Ignore
 	public void deveDevolverNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
+		Assume.assumeTrue(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		
 		// cenario
 		var usuario = new Usuario("Usuario 1");
 		var<Filme> filmes = Arrays.asList(new Filme("Filme 1", 2, 5.0));
