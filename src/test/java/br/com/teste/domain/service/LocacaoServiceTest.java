@@ -25,7 +25,9 @@ import org.junit.rules.ExpectedException;
 import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
 import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
+import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.util.DataUtil;
+import buildermaster.BuilderMaster;
 
 public class LocacaoServiceTest {
 	
@@ -122,6 +124,10 @@ public class LocacaoServiceTest {
 //		MatcherAssert.assertThat(locacao.getDataRetorno(), new DiaSemanaMatcher(Calendar.MONDAY));
 //		MatcherAssert.assertThat(locacao.getDataRetorno(), caiEm(Calendar.MONDAY));
 		MatcherAssert.assertThat(locacao.getDataRetorno(), caiNumaSegunda());
+	}
+	
+	public static void main(String[] args) {
+		new BuilderMaster().gerarCodigoClasse(Locacao.class);
 	}
 	
 }
