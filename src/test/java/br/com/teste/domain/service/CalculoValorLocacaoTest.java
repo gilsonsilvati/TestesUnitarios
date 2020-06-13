@@ -16,9 +16,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.Mockito;
 
 import br.com.teste.domain.dao.LocacaoDAO;
-import br.com.teste.domain.dao.LocacaoDAOFake;
 import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
 import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
@@ -41,7 +41,7 @@ public class CalculoValorLocacaoTest {
 	public void setup() {
 		locacaoService = new LocacaoService();
 
-		LocacaoDAO locacaoDAO = new LocacaoDAOFake();
+		LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
 
 		locacaoService.setLocacaoDAO(locacaoDAO);
 	}
