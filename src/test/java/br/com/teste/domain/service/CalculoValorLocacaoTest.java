@@ -17,6 +17,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import br.com.teste.domain.dao.LocacaoDAO;
+import br.com.teste.domain.dao.LocacaoDAOFake;
 import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
 import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
@@ -38,6 +40,10 @@ public class CalculoValorLocacaoTest {
 	@Before
 	public void setup() {
 		locacaoService = new LocacaoService();
+
+		LocacaoDAO locacaoDAO = new LocacaoDAOFake();
+
+		locacaoService.setLocacaoDAO(locacaoDAO);
 	}
 	
 	private static Filme filme1 = umFilme().agora();
