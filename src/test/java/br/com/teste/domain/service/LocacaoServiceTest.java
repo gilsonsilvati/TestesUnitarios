@@ -12,6 +12,7 @@ import static org.hamcrest.CoreMatchers.is;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
@@ -58,7 +59,7 @@ public class LocacaoServiceTest {
 		
 		// cenario
 		var usuario = umUsuario().agora();
-		var<Filme> filmes = Arrays.asList(umFilme().comValor(5.0).agora());
+		List<Filme> filmes = Arrays.asList(umFilme().comValor(5.0).agora());
 		
 		// acao
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
