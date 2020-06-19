@@ -14,12 +14,12 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -31,6 +31,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import br.com.teste.domain.dao.LocacaoDAO;
@@ -43,10 +45,16 @@ import br.com.teste.domain.util.DataUtil;
 
 public class LocacaoServiceTest {
 	
+	@InjectMocks
 	private LocacaoService locacaoService;
 	
+	@Mock
 	private LocacaoDAO locacaoDAO;
+	
+	@Mock
 	private SPCService spcService;
+	
+	@Mock
 	private EmailService emailService;
 	
 	@Rule
@@ -58,15 +66,7 @@ public class LocacaoServiceTest {
 	
 	@Before
 	public void setup() {
-		locacaoService = new LocacaoService();
-		
-		locacaoDAO = mock(LocacaoDAO.class);
-		spcService = mock(SPCService.class);
-		emailService = mock(EmailService.class);
-		
-		locacaoService.setLocacaoDAO(locacaoDAO);
-		locacaoService.setSPCService(spcService);
-		locacaoService.setEmailService(emailService);
+		initMocks(this);
 	}
 	
 	@Test
