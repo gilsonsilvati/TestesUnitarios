@@ -4,6 +4,6 @@ import br.com.teste.domain.model.Usuario;
 
 public interface SPCService {
 	
-	boolean possuiNegativacao(Usuario usuario);
+	boolean possuiNegativacao(Usuario usuario) throws Exception;
 
 }

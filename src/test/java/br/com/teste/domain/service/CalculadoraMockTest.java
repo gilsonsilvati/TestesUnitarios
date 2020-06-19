@@ -1,5 +1,6 @@
 package br.com.teste.domain.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -17,7 +18,7 @@ public class CalculadoraMockTest {
 		when(calculadora.somar(Mockito.eq(1), Mockito.anyInt())).thenReturn(5);
 		
 		// verificacao
-		System.out.println(calculadora.somar(1, 3));
+		assertEquals(5, calculadora.somar(1, 3));
 	}
 
 }
