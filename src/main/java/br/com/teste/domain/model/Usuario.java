@@ -20,7 +20,7 @@ public class Usuario {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(nome);
@@ -36,6 +36,11 @@ public class Usuario {
 		
 		Usuario other = (Usuario) obj;
 		return new EqualsBuilder().append(nome, other.nome).isEquals();
+	}
+
+	@Override
+	public String toString() {
+		return "Usuario [nome=" + nome + "]";
 	}
 	
 }

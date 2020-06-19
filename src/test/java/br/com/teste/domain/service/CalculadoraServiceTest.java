@@ -1,6 +1,7 @@
 package br.com.teste.domain.service;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +35,7 @@ public class CalculadoraServiceTest {
 		resultado = calculadoraService.somar(a, b);
 		
 		// verificacao
-		Assert.assertEquals(8, resultado);
+		assertEquals(8, resultado);
 	}
 
 	@Test(expected = NaoPodeSubtrairNumeroMenorPorMaiorException.class)
@@ -57,7 +58,7 @@ public class CalculadoraServiceTest {
 		resultado = calculadoraService.subtrair(a, b);
 		
 		// verificacao
-		Assert.assertEquals(3, resultado);
+		assertEquals(3, resultado);
 	}
 	
 	@Test
@@ -70,7 +71,7 @@ public class CalculadoraServiceTest {
 		resultado = calculadoraService.dividir(a, b);
 		
 		// verificacao
-		Assert.assertEquals(2, resultado);
+		assertEquals(2, resultado);
 	}
 	
 	@Test(expected = NaoPodeDividirPorZeroException.class)

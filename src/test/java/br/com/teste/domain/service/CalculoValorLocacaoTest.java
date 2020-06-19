@@ -4,12 +4,12 @@ import static br.com.teste.domain.builders.FilmeBuilder.umFilme;
 import static br.com.teste.domain.builders.UsuarioBuilder.umUsuario;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +77,7 @@ public class CalculoValorLocacaoTest {
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
 		
 		// verificacao
-		MatcherAssert.assertThat(locacao.getValor(), is(equalTo(valorLocacao)));
+		assertThat(locacao.getValor(), is(equalTo(valorLocacao)));
 	}
 
 }
