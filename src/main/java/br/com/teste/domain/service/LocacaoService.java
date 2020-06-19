@@ -17,17 +17,25 @@ import br.com.teste.domain.util.DataUtil;
 public class LocacaoService {
 	
 	private LocacaoDAO locacaoDAO;
+	private SPCService spcService;
 	
 	public Locacao alugarFilme(Usuario usuario, List<Filme> filmes) throws FilmeSemEstoqueException, LocadoraException {
-		if (usuario == null)
+		if (usuario == null) {
 			throw new LocadoraException("Usuário vazio");
+		}
 		
-		if (filmes == null || filmes.isEmpty())
+		if (filmes == null || filmes.isEmpty()) {
 			throw new LocadoraException("Filme vazio");
+		}
 		
 		for (Filme filme : filmes) {
-			if (filme.getEstoque() == 0)
+			if (filme.getEstoque() == 0) {
 				throw new FilmeSemEstoqueException();
+			}
+		}
+		
+		if (spcService.possuiNegativacao(usuario)) {
+			throw new LocadoraException("Usuário Negativado");
 		}
 		
 		Locacao locacao = new Locacao();
@@ -84,6 +92,10 @@ public class LocacaoService {
 	
 	protected void setLocacaoDAO(LocacaoDAO locacaoDAO) {
 		this.locacaoDAO = locacaoDAO;
+	}
+	
+	protected void setSPCService(SPCService spcService) {
+		this.spcService = spcService;
 	}
 
 }

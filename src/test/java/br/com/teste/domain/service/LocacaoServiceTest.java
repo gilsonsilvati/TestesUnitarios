@@ -8,6 +8,7 @@ import static br.com.teste.domain.matchers.MatchersProprios.ehHoje;
 import static br.com.teste.domain.matchers.MatchersProprios.ehHojeComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -28,13 +29,13 @@ import br.com.teste.domain.dao.LocacaoDAO;
 import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
 import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
-import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.util.DataUtil;
-import buildermaster.BuilderMaster;
 
 public class LocacaoServiceTest {
 	
 	private LocacaoService locacaoService;
+	
+	private SPCService spcService;
 	
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
@@ -48,8 +49,10 @@ public class LocacaoServiceTest {
 		locacaoService = new LocacaoService();
 		
 		LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
+		spcService = Mockito.mock(SPCService.class);
 		
 		locacaoService.setLocacaoDAO(locacaoDAO);
+		locacaoService.setSPCService(spcService);
 	}
 	
 	@Test
@@ -78,7 +81,7 @@ public class LocacaoServiceTest {
 	public void naoDeveAlugarFilmeSemEstoque() throws Exception {
 		// cenario
 		var usuario = umUsuario().agora();
-		var<Filme> filmes = Arrays.asList(umFilmeSemEstoque().agora());
+		List<Filme> filmes = Arrays.asList(umFilmeSemEstoque().agora());
 
 		// acao
 		locacaoService.alugarFilme(usuario, filmes);
@@ -88,7 +91,7 @@ public class LocacaoServiceTest {
 	@Test
 	public void naoDeveAlugarFilmeSemUsuario() throws FilmeSemEstoqueException {
 		// cenario
-		var<Filme> filmes = Arrays.asList(umFilme().agora());
+		List<Filme> filmes = Arrays.asList(umFilme().agora());
 
 		// acao
 		try {
@@ -119,7 +122,7 @@ public class LocacaoServiceTest {
 		
 		// cenario
 		var usuario = umUsuario().agora();
-		var<Filme> filmes = Arrays.asList(umFilme().agora());
+		List<Filme> filmes = Arrays.asList(umFilme().agora());
 		
 		// acao
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
@@ -133,8 +136,24 @@ public class LocacaoServiceTest {
 		MatcherAssert.assertThat(locacao.getDataRetorno(), caiNumaSegunda());
 	}
 	
-	public static void main(String[] args) {
-		new BuilderMaster().gerarCodigoClasse(Locacao.class);
+	@Test
+	public void naoDeveAlugarFilmeParaUsuarioNegativado() throws FilmeSemEstoqueException, LocadoraException {
+		// cenario
+		var usuario = umUsuario().agora();
+//		var usuario2 = umUsuario().comNome("Usuário 2").agora();
+		List<Filme> filmes = Arrays.asList(umFilme().agora());
+		
+		when(spcService.possuiNegativacao(usuario)).thenReturn(true);
+		
+		exception.expect(LocadoraException.class);
+		exception.expectMessage("Usuário Negativado");
+		
+		// Acao
+		locacaoService.alugarFilme(usuario, filmes);
 	}
+	
+//	public static void main(String[] args) {
+//		new BuilderMaster().gerarCodigoClasse(Locacao.class);
+//	}
 	
 }

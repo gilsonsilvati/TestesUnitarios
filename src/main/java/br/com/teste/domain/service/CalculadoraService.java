@@ -10,15 +10,17 @@ public class CalculadoraService {
 	}
 
 	public int subtrair(int a, int b) throws NaoPodeSubtrairNumeroMenorPorMaiorException {
-		if (a < b)
+		if (a < b) {
 			throw new NaoPodeSubtrairNumeroMenorPorMaiorException();
+		}
 		
 		return a - b;
 	}
 
 	public int dividir(int a, int b) throws NaoPodeDividirPorZeroException {
-		if (a == 0 || b == 0)
+		if (a == 0 || b == 0) {
 			throw new NaoPodeDividirPorZeroException();
+		}
 		
 		return a / b;
 	}
