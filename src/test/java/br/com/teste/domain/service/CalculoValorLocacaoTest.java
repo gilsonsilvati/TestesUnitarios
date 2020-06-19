@@ -5,6 +5,7 @@ import static br.com.teste.domain.builders.UsuarioBuilder.umUsuario;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.mockito.Mockito;
 
 import br.com.teste.domain.dao.LocacaoDAO;
 import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
@@ -41,8 +41,8 @@ public class CalculoValorLocacaoTest {
 	public void setup() {
 		locacaoService = new LocacaoService();
 
-		LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
-		SPCService spcService = Mockito.mock(SPCService.class);
+		LocacaoDAO locacaoDAO = mock(LocacaoDAO.class);
+		SPCService spcService = mock(SPCService.class);
 
 		locacaoService.setLocacaoDAO(locacaoDAO);
 		locacaoService.setSPCService(spcService);

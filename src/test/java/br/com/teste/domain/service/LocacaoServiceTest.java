@@ -7,14 +7,18 @@ import static br.com.teste.domain.builders.UsuarioBuilder.umUsuario;
 import static br.com.teste.domain.matchers.MatchersProprios.caiNumaSegunda;
 import static br.com.teste.domain.matchers.MatchersProprios.ehHoje;
 import static br.com.teste.domain.matchers.MatchersProprios.ehHojeComDiferencaDias;
-import static br.com.teste.domain.util.DataUtil.obterDataComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -34,6 +38,7 @@ import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
 import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
 import br.com.teste.domain.model.Locacao;
+import br.com.teste.domain.model.Usuario;
 import br.com.teste.domain.util.DataUtil;
 
 public class LocacaoServiceTest {
@@ -55,9 +60,9 @@ public class LocacaoServiceTest {
 	public void setup() {
 		locacaoService = new LocacaoService();
 		
-		locacaoDAO = Mockito.mock(LocacaoDAO.class);
-		spcService = Mockito.mock(SPCService.class);
-		emailService = Mockito.mock(EmailService.class);
+		locacaoDAO = mock(LocacaoDAO.class);
+		spcService = mock(SPCService.class);
+		emailService = mock(EmailService.class);
 		
 		locacaoService.setLocacaoDAO(locacaoDAO);
 		locacaoService.setSPCService(spcService);
@@ -152,7 +157,7 @@ public class LocacaoServiceTest {
 //		var usuario2 = umUsuario().comNome("Usuário 2").agora();
 		List<Filme> filmes = Arrays.asList(umFilme().agora());
 		
-		when(spcService.possuiNegativacao(usuario)).thenReturn(true);
+		when(spcService.possuiNegativacao(Mockito.any(Usuario.class))).thenReturn(true);
 		
 		// Nova
 //		exception.expect(LocadoraException.class);
@@ -175,12 +180,14 @@ public class LocacaoServiceTest {
 	public void deveEnviarEmailParaLocacoesAtrasadas() {
 		// cenario
 		var usuario = umUsuario().agora();
-//		var usuario2 = umUsuario().comNome("Usuário 2").agora();
+		var usuario2 = umUsuario().comNome("Usuário em dia").agora();
+		var usuario3 = umUsuario().comNome("Outro atrasado").agora();
 		List<Locacao> locacoes = Arrays.asList(
-				umLocacao()
-					.comUsuario(usuario)
-					.comDataRetorno(obterDataComDiferencaDias(-2))
-					.agora());
+				umLocacao().atrasada().comUsuario(usuario).agora(),
+				umLocacao().comUsuario(usuario2).agora(),
+				umLocacao().atrasada().comUsuario(usuario3).agora(),
+				umLocacao().atrasada().comUsuario(usuario3).agora()
+		);
 		
 		when(locacaoDAO.obterLocacoesPendentes()).thenReturn(locacoes);
 		
@@ -188,7 +195,11 @@ public class LocacaoServiceTest {
 		locacaoService.notificarAtrasos();
 		
 		// verificacao
+		verify(emailService, times(3)).notificarAtrasos(Mockito.any(Usuario.class));
 		verify(emailService).notificarAtrasos(usuario);
+		verify(emailService, atLeastOnce()).notificarAtrasos(usuario3);
+		verify(emailService, never()).notificarAtrasos(usuario2);
+		verifyNoMoreInteractions(emailService);
 	}
 	
 //	public static void main(String[] args) {
