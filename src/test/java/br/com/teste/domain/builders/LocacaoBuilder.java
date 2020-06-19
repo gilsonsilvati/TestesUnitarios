@@ -2,6 +2,7 @@ package br.com.teste.domain.builders;
 
 import static br.com.teste.domain.builders.FilmeBuilder.umFilme;
 import static br.com.teste.domain.builders.UsuarioBuilder.umUsuario;
+import static br.com.teste.domain.util.DataUtil.obterDataComDiferencaDias;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -54,6 +55,13 @@ public class LocacaoBuilder {
 
 	public LocacaoBuilder comDataRetorno(Date param) {
 		locacao.setDataRetorno(param);
+		return this;
+	}
+	
+	public LocacaoBuilder atrasada() {
+		locacao.setDataLocacao(obterDataComDiferencaDias(-4));
+		locacao.setDataRetorno(obterDataComDiferencaDias(-2));
+		
 		return this;
 	}
 

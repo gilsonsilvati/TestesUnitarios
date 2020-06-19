@@ -4,19 +4,21 @@ import static br.com.teste.domain.builders.FilmeBuilder.umFilme;
 import static br.com.teste.domain.builders.UsuarioBuilder.umUsuario;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import br.com.teste.domain.dao.LocacaoDAO;
 import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
@@ -35,15 +37,18 @@ public class CalculoValorLocacaoTest {
 	@Parameter(value = 2)
 	public String cenario;
 	
+	@InjectMocks
 	private LocacaoService locacaoService;
+	
+	@Mock
+	private LocacaoDAO locacaoDAO;
+	
+	@Mock
+	private SPCService spcService;
 	
 	@Before
 	public void setup() {
-		locacaoService = new LocacaoService();
-
-		LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
-
-		locacaoService.setLocacaoDAO(locacaoDAO);
+		initMocks(this);
 	}
 	
 	private static Filme filme1 = umFilme().agora();
@@ -75,7 +80,7 @@ public class CalculoValorLocacaoTest {
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
 		
 		// verificacao
-		MatcherAssert.assertThat(locacao.getValor(), is(equalTo(valorLocacao)));
+		assertThat(locacao.getValor(), is(equalTo(valorLocacao)));
 	}
 
 }
