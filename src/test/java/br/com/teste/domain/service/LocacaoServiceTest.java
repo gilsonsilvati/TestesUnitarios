@@ -31,6 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -217,8 +218,24 @@ public class LocacaoServiceTest {
 		
 		// acao
 		locacaoService.alugarFilme(usuario, filmes);
+	}
+	
+	@Test
+	public void deveProrrogarLocacao() {
+		// cenario
+		var locacao = umLocacao().agora();
 		
+		// acao
+		locacaoService.prorrogarLocacao(locacao, 3);
 		
+		// verificacao
+		ArgumentCaptor<Locacao> argumentCaptor = ArgumentCaptor.forClass(Locacao.class);
+		verify(locacaoDAO).salvar(argumentCaptor.capture());
+		var locacaoRetornada = argumentCaptor.getValue();
+		
+		error.checkThat(locacaoRetornada.getValor(), is(equalTo(12.0)));
+		error.checkThat(locacaoRetornada.getDataLocacao(), ehHoje());
+		error.checkThat(locacaoRetornada.getDataRetorno(), ehHojeComDiferencaDias(3));
 	}
 	
 //	public static void main(String[] args) {

@@ -109,6 +109,23 @@ public class LocacaoService {
 		}
 	}
 	
+	public void prorrogarLocacao(Locacao locacao, int dias) {
+		var novaLocacao = instanciarNovaLocacao(locacao, dias);
+		
+		locacaoDAO.salvar(novaLocacao);
+	}
+
+	private Locacao instanciarNovaLocacao(Locacao locacao, int dias) {
+		var novaLocacao = new Locacao();
+		novaLocacao.setUsuario(locacao.getUsuario());
+		novaLocacao.setFilmes(locacao.getFilmes());
+		novaLocacao.setDataLocacao(new Date());
+		novaLocacao.setDataRetorno(DataUtil.obterDataComDiferencaDias(dias));
+		novaLocacao.setValor(locacao.getValor() * dias);
+		
+		return novaLocacao;
+	}
+	
 	/* Injeções de Dependências */
 //	public void setLocacaoDAO(LocacaoDAO locacaoDAO) {
 //		this.locacaoDAO = locacaoDAO;

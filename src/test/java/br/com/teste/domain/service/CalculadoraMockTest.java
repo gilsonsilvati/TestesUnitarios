@@ -5,7 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.ArgumentCaptor;
 
 public class CalculadoraMockTest {
 	
@@ -15,10 +15,13 @@ public class CalculadoraMockTest {
 		var calculadora = mock(CalculadoraService.class);
 		
 		// acao
-		when(calculadora.somar(Mockito.eq(1), Mockito.anyInt())).thenReturn(5);
+		ArgumentCaptor<Integer> argumentCaptor = ArgumentCaptor.forClass(Integer.class);
+//		when(calculadora.somar(Mockito.eq(1), Mockito.anyInt())).thenReturn(5);
+		when(calculadora.somar(argumentCaptor.capture(), argumentCaptor.capture())).thenReturn(5);
 		
 		// verificacao
-		assertEquals(5, calculadora.somar(1, 3));
+		assertEquals(5, calculadora.somar(1, 100000));
+		System.out.println(argumentCaptor.getAllValues());
 	}
 
 }
