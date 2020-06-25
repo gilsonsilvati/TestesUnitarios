@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
@@ -46,10 +46,9 @@ import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
 import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.model.Usuario;
-import br.com.teste.domain.util.DataUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ LocacaoService.class, DataUtil.class })
+@PrepareForTest(LocacaoService.class)
 @PowerMockIgnore("jdk.internal.reflect.*") // Estava dando erro de: initializationError -> 
 // Caused by: java.lang.IllegalAccessError: class jdk.internal.reflect.ConstructorAccessorImpl loaded by org.powermock.core.classloader.MockClassLoader @453da22c cannot access jdk/internal/reflect superclass jdk.internal.reflect.MagicAccessorImpl
 public class LocacaoServiceTest {
@@ -87,15 +86,22 @@ public class LocacaoServiceTest {
 		var usuario = umUsuario().agora();
 		List<Filme> filmes = Arrays.asList(umFilme().comValor(5.0).agora());
 		
-		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(obterData(26, 6, 2020));
+//		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(obterData(26, 6, 2020));
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, 26);
+		calendar.set(Calendar.MONTH, Calendar.JUNE);
+		calendar.set(Calendar.YEAR, 2020);
+		
+		PowerMockito.mockStatic(Calendar.class);
+		PowerMockito.when(Calendar.getInstance()).thenReturn(calendar);
 		
 		// acao
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
 		
 		// verificacao
 		error.checkThat(locacao.getValor(), is(equalTo(5.0)));
-		error.checkThat(locacao.getDataLocacao(), ehHoje());
-		error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
+//		error.checkThat(locacao.getDataLocacao(), ehHoje());
+//		error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
 		error.checkThat(ehMesmaData(locacao.getDataLocacao(), obterData(26, 6, 2020)), is(true));
 		error.checkThat(ehMesmaData(locacao.getDataRetorno(), obterData(27, 6, 2020)), is(true));
 	}
@@ -148,7 +154,14 @@ public class LocacaoServiceTest {
 		var usuario = umUsuario().agora();
 		List<Filme> filmes = Arrays.asList(umFilme().agora());
 		
-		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(obterData(27, 6, 2020));
+//		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(obterData(27, 6, 2020));
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, 27);
+		calendar.set(Calendar.MONTH, Calendar.JUNE);
+		calendar.set(Calendar.YEAR, 2020);
+		
+		PowerMockito.mockStatic(Calendar.class);
+		PowerMockito.when(Calendar.getInstance()).thenReturn(calendar);
 		
 		// acao
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
@@ -160,7 +173,9 @@ public class LocacaoServiceTest {
 //		MatcherAssert.assertThat(locacao.getDataRetorno(), new DiaSemanaMatcher(Calendar.MONDAY));
 //		MatcherAssert.assertThat(locacao.getDataRetorno(), caiEm(Calendar.MONDAY));
 		assertThat(locacao.getDataRetorno(), caiNumaSegunda());
-		PowerMockito.verifyNew(Date.class, Mockito.times(2)).withNoArguments();
+//		PowerMockito.verifyNew(Date.class, Mockito.times(2)).withNoArguments();
+		
+		PowerMockito.verifyStatic(Calendar.class, Mockito.atLeastOnce());
 	}
 	
 	@Test

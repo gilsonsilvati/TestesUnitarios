@@ -21,7 +21,7 @@ public class CalculadoraMockTest {
 		
 		// verificacao
 		assertEquals(5, calculadora.somar(1, 100000));
-		System.out.println(argumentCaptor.getAllValues());
+//		System.out.println(argumentCaptor.getAllValues());
 	}
 
 }
