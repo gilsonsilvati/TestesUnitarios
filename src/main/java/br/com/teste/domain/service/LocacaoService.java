@@ -50,13 +50,11 @@ public class LocacaoService {
 		Locacao locacao = new Locacao();
 		locacao.setFilmes(filmes);
 		locacao.setUsuario(usuario);
-//		locacao.setDataLocacao(new Date());
-		locacao.setDataLocacao(Calendar.getInstance().getTime());
+		locacao.setDataLocacao(obterData());
 		locacao.setValor(calcularValorLocacao(filmes));
 
 		// Entrega no dia seguinte
-//		Date dataEntrega = new Date();
-		Date dataEntrega = Calendar.getInstance().getTime();
+		Date dataEntrega = obterData();
 		dataEntrega = adicionarDias(dataEntrega, 1);
 		
 		if (DataUtil.verificarDiaSemana(dataEntrega, Calendar.SUNDAY))
@@ -69,32 +67,12 @@ public class LocacaoService {
 		
 		return locacao;
 	}
-
-	private double calcularValorLocacao(List<Filme> filmes) {
-		double valorTotal = 0;
-		
-		for (int i = 0; i < filmes.size(); i++) {
-			Filme filme = filmes.get(i);
-			double valorFilme = filme.getPrecoLocacao();
-			
-			switch (i) {
-				case 2: valorFilme *= 0.75; break;
-				case 3: valorFilme *= 0.5; break;
-				case 4: valorFilme *= 0.25; break;
-				case 5: valorFilme = 0.0; break;
-			}
-			
-			valorTotal += valorFilme;
-		}
-		
-		return valorTotal;
-	}
 	
 	public void notificarAtrasos() {
 		List<Locacao> locacoes = locacaoDAO.obterLocacoesPendentes();
 		
 		for (Locacao locacao : locacoes) {
-			if (locacao.getDataRetorno().before(new Date())) {
+			if (locacao.getDataRetorno().before(obterData())) {
 				emailService.notificarAtrasos(locacao.getUsuario());
 			}
 		}
@@ -106,28 +84,39 @@ public class LocacaoService {
 		locacaoDAO.salvar(novaLocacao);
 	}
 
+	protected Date obterData() {
+		return new Date();
+	}
+	
+	private double calcularValorLocacao(List<Filme> filmes) {
+		double valorTotal = 0;
+		
+		for (int i = 0; i < filmes.size(); i++) {
+			Filme filme = filmes.get(i);
+			double valorFilme = filme.getPrecoLocacao();
+			
+			switch (i) {
+			case 2: valorFilme *= 0.75; break;
+			case 3: valorFilme *= 0.5; break;
+			case 4: valorFilme *= 0.25; break;
+			case 5: valorFilme = 0.0; break;
+			}
+			
+			valorTotal += valorFilme;
+		}
+		
+		return valorTotal;
+	}
+	
 	private Locacao instanciarNovaLocacao(Locacao locacao, int dias) {
 		var novaLocacao = new Locacao();
 		novaLocacao.setUsuario(locacao.getUsuario());
 		novaLocacao.setFilmes(locacao.getFilmes());
-		novaLocacao.setDataLocacao(new Date());
+		novaLocacao.setDataLocacao(obterData());
 		novaLocacao.setDataRetorno(DataUtil.obterDataComDiferencaDias(dias));
 		novaLocacao.setValor(locacao.getValor() * dias);
 		
 		return novaLocacao;
 	}
-	
-	/* Injeções de Dependências */
-//	public void setLocacaoDAO(LocacaoDAO locacaoDAO) {
-//		this.locacaoDAO = locacaoDAO;
-//	}
-//	
-//	public void setSPCService(SPCService spcService) {
-//		this.spcService = spcService;
-//	}
-//	
-//	public void setEmailService(EmailService emailService) {
-//		this.emailService = emailService;
-//	}
 
 }

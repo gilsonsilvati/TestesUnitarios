@@ -21,8 +21,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
@@ -30,16 +30,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
+import org.mockito.Spy;
 
 import br.com.teste.domain.dao.LocacaoDAO;
 import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
@@ -48,13 +43,9 @@ import br.com.teste.domain.model.Filme;
 import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.model.Usuario;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(LocacaoService.class)
-@PowerMockIgnore("jdk.internal.reflect.*") // Estava dando erro de: initializationError -> 
-// Caused by: java.lang.IllegalAccessError: class jdk.internal.reflect.ConstructorAccessorImpl loaded by org.powermock.core.classloader.MockClassLoader @453da22c cannot access jdk/internal/reflect superclass jdk.internal.reflect.MagicAccessorImpl
 public class LocacaoServiceTest {
 	
-	@InjectMocks
+	@InjectMocks @Spy
 	private LocacaoService locacaoService;
 	
 	@Mock
@@ -76,35 +67,21 @@ public class LocacaoServiceTest {
 	@Before
 	public void setup() {
 		initMocks(this);
-		
-		locacaoService = PowerMockito.spy(locacaoService);
 	}
 	
 	@Test
-//	@Ignore
 	public void deveAlugarFilme() throws Exception {
-//		assumeFalse(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
-		
 		// cenario
 		var usuario = umUsuario().agora();
 		List<Filme> filmes = Arrays.asList(umFilme().comValor(5.0).agora());
 		
-//		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(obterData(26, 6, 2020));
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, 26);
-		calendar.set(Calendar.MONTH, Calendar.JUNE);
-		calendar.set(Calendar.YEAR, 2020);
-		
-		PowerMockito.mockStatic(Calendar.class);
-		PowerMockito.when(Calendar.getInstance()).thenReturn(calendar);
+		Mockito.doReturn(obterData(26, 6, 2020)).when(locacaoService).obterData();
 		
 		// acao
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
 		
 		// verificacao
 		error.checkThat(locacao.getValor(), is(equalTo(5.0)));
-//		error.checkThat(locacao.getDataLocacao(), ehHoje());
-//		error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
 		error.checkThat(ehMesmaData(locacao.getDataLocacao(), obterData(26, 6, 2020)), is(true));
 		error.checkThat(ehMesmaData(locacao.getDataRetorno(), obterData(27, 6, 2020)), is(true));
 	}
@@ -149,50 +126,27 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
-//	@Ignore
 	public void deveDevolverNaSegundaAoAlugarNoSabado() throws Exception {
-//		assumeTrue(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
-		
 		// cenario
 		var usuario = umUsuario().agora();
 		List<Filme> filmes = Arrays.asList(umFilme().agora());
 		
-//		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(obterData(27, 6, 2020));
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, 27);
-		calendar.set(Calendar.MONTH, Calendar.JUNE);
-		calendar.set(Calendar.YEAR, 2020);
-		
-		PowerMockito.mockStatic(Calendar.class);
-		PowerMockito.when(Calendar.getInstance()).thenReturn(calendar);
+		Mockito.doReturn(obterData(27, 6, 2020)).when(locacaoService).obterData();
 		
 		// acao
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
 		
 		// verificacao
-//		boolean ehSegunda = DataUtil.verificarDiaSemana(locacao.getDataRetorno(), Calendar.MONDAY);
-//		Assert.assertTrue(ehSegunda);
-		
-//		MatcherAssert.assertThat(locacao.getDataRetorno(), new DiaSemanaMatcher(Calendar.MONDAY));
-//		MatcherAssert.assertThat(locacao.getDataRetorno(), caiEm(Calendar.MONDAY));
 		assertThat(locacao.getDataRetorno(), caiNumaSegunda());
-//		PowerMockito.verifyNew(Date.class, Mockito.times(2)).withNoArguments();
-		
-		PowerMockito.verifyStatic(Calendar.class, Mockito.atLeastOnce());
 	}
 	
 	@Test
 	public void naoDeveAlugarFilmeParaUsuarioNegativado() throws Exception {
 		// cenario
 		var usuario = umUsuario().agora();
-//		var usuario2 = umUsuario().comNome("Usuário 2").agora();
 		List<Filme> filmes = Arrays.asList(umFilme().agora());
 		
 		when(spcService.possuiNegativacao(Mockito.any(Usuario.class))).thenReturn(true);
-		
-		// Nova
-//		exception.expect(LocadoraException.class);
-//		exception.expectMessage("Usuário Negativado");
 		
 		// acao
 		// Robusta
@@ -268,22 +222,6 @@ public class LocacaoServiceTest {
 		error.checkThat(locacaoRetornada.getDataRetorno(), ehHojeComDiferencaDias(3));
 	}
 	
-	@Test
-	public void deveAlugarFilme_SemCacularValor() throws Exception {
-		// cenario
-		var usuario = umUsuario().agora();
-		List<Filme> filmes = Arrays.asList(umFilme().agora());
-		
-		PowerMockito.doReturn(1.0).when(locacaoService, "calcularValorLocacao", filmes);
-		
-		// acao
-		var locacao = locacaoService.alugarFilme(usuario, filmes);
-		
-		// verificacao
-		assertThat(locacao.getValor(), is(1.0));
-		PowerMockito.verifyPrivate(locacaoService).invoke("calcularValorLocacao", filmes);
-	}
-	
 	// Executando métodos privados
 	@Test
 	public void deveCalcularValorLocacao() throws Exception {
@@ -291,7 +229,11 @@ public class LocacaoServiceTest {
 		List<Filme> filmes = Arrays.asList(umFilme().agora());
 		
 		// acao
-		double valor = (double) Whitebox.invokeMethod(locacaoService, "calcularValorLocacao", filmes);
+		Class<LocacaoService> clazz = LocacaoService.class;
+		Method method = clazz.getDeclaredMethod("calcularValorLocacao", List.class);
+		method.setAccessible(true);
+		
+		double valor = (double) method.invoke(locacaoService, filmes);
 		
 		// verificacao
 		assertThat(valor, is(4.0));
