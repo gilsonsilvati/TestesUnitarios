@@ -7,12 +7,12 @@ import static br.com.teste.domain.builders.UsuarioBuilder.umUsuario;
 import static br.com.teste.domain.matchers.MatchersProprios.caiNumaSegunda;
 import static br.com.teste.domain.matchers.MatchersProprios.ehHoje;
 import static br.com.teste.domain.matchers.MatchersProprios.ehHojeComDiferencaDias;
+import static br.com.teste.domain.util.DataUtil.ehMesmaData;
+import static br.com.teste.domain.util.DataUtil.obterData;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -31,10 +30,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.com.teste.domain.dao.LocacaoDAO;
 import br.com.teste.domain.exceptions.FilmeSemEstoqueException;
@@ -44,6 +48,10 @@ import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.model.Usuario;
 import br.com.teste.domain.util.DataUtil;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ LocacaoService.class, DataUtil.class })
+@PowerMockIgnore("jdk.internal.reflect.*") // Estava dando erro de: initializationError -> 
+// Caused by: java.lang.IllegalAccessError: class jdk.internal.reflect.ConstructorAccessorImpl loaded by org.powermock.core.classloader.MockClassLoader @453da22c cannot access jdk/internal/reflect superclass jdk.internal.reflect.MagicAccessorImpl
 public class LocacaoServiceTest {
 	
 	@InjectMocks
@@ -73,22 +81,23 @@ public class LocacaoServiceTest {
 	@Test
 //	@Ignore
 	public void deveAlugarFilme() throws Exception {
-		assumeFalse(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+//		assumeFalse(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 		
 		// cenario
 		var usuario = umUsuario().agora();
 		List<Filme> filmes = Arrays.asList(umFilme().comValor(5.0).agora());
+		
+		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(obterData(26, 6, 2020));
 		
 		// acao
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
 		
 		// verificacao
 		error.checkThat(locacao.getValor(), is(equalTo(5.0)));
-//		error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
-//		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
-		
 		error.checkThat(locacao.getDataLocacao(), ehHoje());
 		error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
+		error.checkThat(ehMesmaData(locacao.getDataLocacao(), obterData(26, 6, 2020)), is(true));
+		error.checkThat(ehMesmaData(locacao.getDataRetorno(), obterData(27, 6, 2020)), is(true));
 	}
 	
 	// Elegante
@@ -132,12 +141,14 @@ public class LocacaoServiceTest {
 	
 	@Test
 //	@Ignore
-	public void deveDevolverNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
-		assumeTrue(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+	public void deveDevolverNaSegundaAoAlugarNoSabado() throws Exception {
+//		assumeTrue(DataUtil.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 		
 		// cenario
 		var usuario = umUsuario().agora();
 		List<Filme> filmes = Arrays.asList(umFilme().agora());
+		
+		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(obterData(27, 6, 2020));
 		
 		// acao
 		var locacao = locacaoService.alugarFilme(usuario, filmes);
@@ -149,6 +160,7 @@ public class LocacaoServiceTest {
 //		MatcherAssert.assertThat(locacao.getDataRetorno(), new DiaSemanaMatcher(Calendar.MONDAY));
 //		MatcherAssert.assertThat(locacao.getDataRetorno(), caiEm(Calendar.MONDAY));
 		assertThat(locacao.getDataRetorno(), caiNumaSegunda());
+		PowerMockito.verifyNew(Date.class, Mockito.times(2)).withNoArguments();
 	}
 	
 	@Test

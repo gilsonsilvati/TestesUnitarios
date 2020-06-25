@@ -1,4 +1,4 @@
-package br.com.teste.domain.suites;
+/* package br.com.teste.domain.suites;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -14,4 +14,4 @@ import br.com.teste.domain.service.LocacaoServiceTest;
 	CalculoValorLocacaoTest.class,
 	LocacaoServiceTest.class
 })
-public class SuiteExecucao { } // Não muito recomendado: pode acabar esquecendo alguma classe de teste.
+public class SuiteExecucao { } */ // Não muito recomendado: pode acabar esquecendo alguma classe de teste.
