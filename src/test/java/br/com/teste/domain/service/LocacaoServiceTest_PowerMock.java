@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,15 +54,28 @@ public class LocacaoServiceTest_PowerMock {
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
 	
-	@SuppressWarnings("deprecation")
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
 	@Before
 	public void setup() {
+		System.out.println(">>> Iniciando 4...");
+		
+		CalculadoraServiceTest.ordem.append("4");
+		
 		initMocks(this);
 		
 		locacaoService = PowerMockito.spy(locacaoService);
+	}
+	
+	@After
+	public void tearDown() {
+		System.out.println(">>> Finalizando 4...");
+	}
+	
+	@AfterClass
+	public static void tearDownClass() {
+		System.out.println(CalculadoraServiceTest.ordem.toString());
 	}
 	
 	@Test

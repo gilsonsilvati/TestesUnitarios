@@ -26,12 +26,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -44,9 +44,7 @@ import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
 import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.model.Usuario;
-import br.com.teste.domain.runners.ParallelRunner;
 
-@RunWith(ParallelRunner.class)
 public class LocacaoServiceTest {
 	
 	@InjectMocks @Spy
@@ -64,7 +62,6 @@ public class LocacaoServiceTest {
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
 	
-	@SuppressWarnings("deprecation")
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
@@ -72,12 +69,19 @@ public class LocacaoServiceTest {
 	public void setUp() {
 		System.out.println(">>> Iniciando 2...");
 		
+		CalculadoraServiceTest.ordem.append("2");
+		
 		initMocks(this);
 	}
 	
 	@After
 	public void tearDown() {
 		System.out.println(">>> Finalizando 2...");
+	}
+	
+	@AfterClass
+	public static void tearDownClass() {
+		System.out.println(CalculadoraServiceTest.ordem.toString());
 	}
 	
 	@Test

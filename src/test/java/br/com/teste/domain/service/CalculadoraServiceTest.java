@@ -3,16 +3,16 @@ package br.com.teste.domain.service;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import br.com.teste.domain.exceptions.NaoPodeDividirPorZeroException;
 import br.com.teste.domain.exceptions.NaoPodeSubtrairNumeroMenorPorMaiorException;
-import br.com.teste.domain.runners.ParallelRunner;
 
-@RunWith(ParallelRunner.class)
 public class CalculadoraServiceTest {
+	
+	public static StringBuffer ordem = new StringBuffer();
 	
 	private int a;
 	private int b;
@@ -23,6 +23,7 @@ public class CalculadoraServiceTest {
 	@Before
 	public void setUp() {
 		System.out.println(">>> Iniciando...");
+		ordem.append("1");
 		
 		a = 0;
 		b = 0;
@@ -34,6 +35,11 @@ public class CalculadoraServiceTest {
 	@After
 	public void tearDown() {
 		System.out.println(">>> Finalizando...");
+	}
+	
+	@AfterClass
+	public static void tearDownClass() {
+		System.out.println(ordem.toString());
 	}
 	
 	@Test
