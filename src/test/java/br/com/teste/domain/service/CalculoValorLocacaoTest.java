@@ -47,7 +47,7 @@ public class CalculoValorLocacaoTest {
 	private SPCService spcService;
 	
 	@Before
-	public void setup() {
+	public void setUp() {
 		initMocks(this);
 	}
 	

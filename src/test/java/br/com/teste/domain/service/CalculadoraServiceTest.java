@@ -2,12 +2,16 @@ package br.com.teste.domain.service;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import br.com.teste.domain.exceptions.NaoPodeDividirPorZeroException;
 import br.com.teste.domain.exceptions.NaoPodeSubtrairNumeroMenorPorMaiorException;
+import br.com.teste.domain.runners.ParallelRunner;
 
+@RunWith(ParallelRunner.class)
 public class CalculadoraServiceTest {
 	
 	private int a;
@@ -17,12 +21,19 @@ public class CalculadoraServiceTest {
 	private CalculadoraService calculadoraService;
 	
 	@Before
-	public void setup() {
+	public void setUp() {
+		System.out.println(">>> Iniciando...");
+		
 		a = 0;
 		b = 0;
 		resultado = 0;
 		
 		calculadoraService = new CalculadoraService();
+	}
+	
+	@After
+	public void tearDown() {
+		System.out.println(">>> Finalizando...");
 	}
 	
 	@Test

@@ -25,11 +25,13 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,7 +44,9 @@ import br.com.teste.domain.exceptions.LocadoraException;
 import br.com.teste.domain.model.Filme;
 import br.com.teste.domain.model.Locacao;
 import br.com.teste.domain.model.Usuario;
+import br.com.teste.domain.runners.ParallelRunner;
 
+@RunWith(ParallelRunner.class)
 public class LocacaoServiceTest {
 	
 	@InjectMocks @Spy
@@ -65,8 +69,15 @@ public class LocacaoServiceTest {
 	public ExpectedException exception = ExpectedException.none();
 	
 	@Before
-	public void setup() {
+	public void setUp() {
+		System.out.println(">>> Iniciando 2...");
+		
 		initMocks(this);
+	}
+	
+	@After
+	public void tearDown() {
+		System.out.println(">>> Finalizando 2...");
 	}
 	
 	@Test
